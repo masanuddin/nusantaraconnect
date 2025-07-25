@@ -12,7 +12,8 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        return view('customer.dashboard');
+        $pekerjaan = Pekerjaan::latest()->get();
+        return view('customer.dashboard', compact('pekerjaan'));
     }
 
     public function listPekerjaan()

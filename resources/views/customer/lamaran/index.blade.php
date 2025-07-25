@@ -1,69 +1,130 @@
 @extends('layouts.customer')
 
 @section('content')
-    <h2>Lamaran Saya</h2>
-    @if(session('success'))
-        <div style="background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;">
-            {{ session('success') }}
-        </div>
-    @endif
+<div class="d-flex justify-content-center">
+    <div style="width: 100%; max-width: 1200px;">
+        <h4 class="fw-bold mb-4" style="color: #7C4B28;">Inbox Lamaran</h4>
 
-    @forelse ($lamarans as $lamaran)
-        <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
-            <p><strong>Pekerjaan:</strong> {{ $lamaran->pekerjaan->nama }}</p>
-            <p><strong>Status:</strong> 
-                @if ($lamaran->status === 'pending')
-                    <span style="color: blue;">Menunggu Review</span>
-                @elseif ($lamaran->status === 'on_review')
-                    <span style="color: orange;">Dalam Review</span>
-                @elseif ($lamaran->status === 'accepted')
-                    <span style="color: green;">Diterima</span>
-                    @php
-                        $chat = \App\Models\Chat::getOrCreate($lamaran->customer_id, $lamaran->pekerjaan->vendor_id);
-                    @endphp
-                    <form action="{{ route('chat.redirect') }}" method="POST" style="display: inline;">
-                        @csrf
-                        <input type="hidden" name="chat_id" value="{{ $chat->id }}">
-                        <input type="hidden" name="pekerjaan_nama" value="{{ $lamaran->pekerjaan->nama }}">
-                        <input type="hidden" name="gaji" value="{{ $lamaran->pekerjaan->range_harga }}">
-                        <input type="hidden" name="thumbnail" value="{{ $lamaran->pekerjaan->thumbnail }}">
-                        <button type="submit">Chat</button>
-                    </form>
-                @elseif ($lamaran->status === 'cancel_approval')
-                    <span style="color: rgb(255, 63, 63);">Menunggu Persetujuan Pembatalan</span>
-                @elseif ($lamaran->status === 'cancelled')
-                    <span style="color: rgb(70, 10, 10);">Lamaran Dibatalkan</span>
-                @endif
-            </p>
-            @if (!in_array($lamaran->status, ['cancel_approval', 'cancelled']))
-                <button onclick="openCancelModal({{ $lamaran->id }})">Cancel Lamaran</button>
-            @endif
-
-            <!-- Modal -->
-            <div id="cancelModal-{{ $lamaran->id }}" class="cancel-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:999;">
-                <div style="background:#fff; padding:20px; margin:100px auto; width:400px; border-radius:8px;">
-                    <h4>Alasan Membatalkan Lamaran</h4>
-                    <form action="{{ route('customer.lamaran.cancel', $lamaran->id) }}" method="POST">
-                        @csrf
-                        <textarea name="cancel_reason" rows="4" style="width:100%;" required></textarea>
-                        <br>
-                        <button type="submit">Kirim Pembatalan</button>
-                        <button type="button" onclick="closeCancelModal({{ $lamaran->id }})">Tutup</button>
-                    </form>
-                </div>
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
             </div>
+        @endif
 
-            <script>
-                function openCancelModal(id) {
-                    document.getElementById('cancelModal-' + id).style.display = 'block';
-                }
+        @if ($lamarans->isEmpty())
+            <p>Anda belum melamar pekerjaan apa pun.</p>
+        @else
+            @foreach ($lamarans as $lamaran)
+                @php
+                    $pekerjaan = $lamaran->pekerjaan;
+                    $status = $lamaran->status;
+                    $statusText = '';
+                    $statusClass = '';
+                    switch ($status) {
+                        case 'accepted':
+                            $statusText = 'Diterima';
+                            $statusClass = 'bg-success text-white';
+                            break;
+                        case 'on_review':
+                            $statusText = 'Sedang Diluas';
+                            $statusClass = 'bg-warning-subtle text-dark';
+                            break;
+                        case 'pending':
+                            $statusText = 'Menunggu Review';
+                            $statusClass = 'bg-primary-subtle text-primary';
+                            break;
+                        case 'cancel_approval':
+                            $statusText = 'Menunggu Persetujuan Pembatalan';
+                            $statusClass = 'bg-danger-subtle text-danger';
+                            break;
+                        case 'cancelled':
+                            $statusText = 'Dibatalkan';
+                            $statusClass = 'bg-dark text-white';
+                            break;
+                        default:
+                            $statusText = ucfirst($status);
+                            $statusClass = 'bg-secondary text-white';
+                            break;
+                    }
+                @endphp
 
-                function closeCancelModal(id) {
-                    document.getElementById('cancelModal-' + id).style.display = 'none';
-                }
-            </script>
-        </div>
-    @empty
-        <p>Anda belum melamar pekerjaan apa pun.</p>
-    @endforelse
+                <div class="d-flex gap-3 align-items-start border rounded shadow-sm mb-3 p-3">
+                    {{-- Sidebar (nama perusahaan, thumbnail jika ada) --}}
+                    <div class="text-center" style="width: 250px;">
+                        <div class="fw-bold text-start">{{ $pekerjaan->nama }}</div>
+                        <div class="text-muted text-start">{{ $pekerjaan->vendor->name ?? 'CV Talentamuda' }}</div>
+                    </div>
+
+                    {{-- Konten utama --}}
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="fw-bold mb-1">{{ $pekerjaan->nama }}</h6>
+                                <div class="text-muted">{{ $pekerjaan->lokasi }}</div>
+                                <div class="text-muted">{{ $pekerjaan->deskripsi }}</div>
+                                <div class="text-muted">Rp{{ $pekerjaan->range_harga }}</div>
+                                <div class="text-muted">Event pada tanggal {{ \Carbon\Carbon::parse($pekerjaan->mulai_kerja)->format('d M Y') }}
+                                    - {{ \Carbon\Carbon::parse($pekerjaan->selesai_kerja)->format('d M Y') }}</div>
+                                <div class="text-muted">Disubmit pada tanggal {{ \Carbon\Carbon::parse($lamaran->created_at)->format('d M Y') }}</div>
+                            </div>
+
+                            {{-- Aksi dan Status --}}
+                            <div class="text-end">
+                                @if ($status === 'accepted')
+                                    @php
+                                        $chat = \App\Models\Chat::getOrCreate($lamaran->customer_id, $lamaran->pekerjaan->vendor_id);
+                                    @endphp
+                                    <form action="{{ route('chat.redirect') }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <input type="hidden" name="chat_id" value="{{ $chat->id }}">
+                                        <input type="hidden" name="pekerjaan_nama" value="{{ $pekerjaan->nama }}">
+                                        <input type="hidden" name="gaji" value="{{ $pekerjaan->range_harga }}">
+                                        <input type="hidden" name="thumbnail" value="{{ $pekerjaan->thumbnail }}">
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm mb-2">Chat</button>
+                                    </form>
+                                @endif
+
+                                <span class="badge {{ $statusClass }} px-3 py-2 rounded-3">{{ $statusText }}</span>
+
+                                @if (!in_array($status, ['cancel_approval', 'cancelled']))
+                                    <br>
+                                    <button onclick="openCancelModal({{ $lamaran->id }})" class="btn btn-link text-danger btn-sm mt-1">Batalkan</button>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Modal Pembatalan --}}
+                <div id="cancelModal-{{ $lamaran->id }}" class="modal fade" tabindex="-1" aria-labelledby="modalLabel{{ $lamaran->id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="{{ route('customer.lamaran.cancel', $lamaran->id) }}" method="POST">
+                                @csrf
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalLabel{{ $lamaran->id }}">Alasan Membatalkan Lamaran</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <textarea name="cancel_reason" rows="4" class="form-control" required></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Kirim Pembatalan</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
+</div>
+
+<script>
+    function openCancelModal(id) {
+        var modal = new bootstrap.Modal(document.getElementById('cancelModal-' + id));
+        modal.show();
+    }
+</script>
 @endsection
