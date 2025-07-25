@@ -46,6 +46,7 @@
             <a href="{{ route('customer.pekerjaan') }}">Lihat Pekerjaan</a>
             <a href="{{ route('customer.chatbot') }}">Chat dengan Asisten</a>
             <a href="{{ route('customer.lamaran.index') }}">Lihat Lamaran</a>
+            <a href="{{ route('chat.index') }}">Chat</a>
         </div>
 
         <form method="POST" action="{{ route('logout') }}" class="logout-form">

@@ -22,6 +22,7 @@ class Lamaran extends Model
         'keterangan_tambahan',
         'video',
         'status',
+        'cancel_reason',
     ];
 
     public function pekerjaan()

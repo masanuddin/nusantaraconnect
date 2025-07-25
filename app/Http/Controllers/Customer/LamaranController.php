@@ -9,6 +9,7 @@ use App\Models\Lamaran;
 use App\Models\AnggotaLamaran;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class LamaranController extends Controller
 {
@@ -160,5 +161,26 @@ class LamaranController extends Controller
 
         return view('customer.lamaran.index', compact('lamarans'));
     }
+
+    public function cancel(Request $request, Lamaran $lamaran)
+{
+    // Pastikan customer hanya bisa cancel lamaran miliknya sendiri
+    if ($lamaran->customer_id !== Auth::id()) {
+        abort(403, 'Tidak diizinkan.');
+    }
+
+    $request->validate([
+        'cancel_reason' => 'required|string|max:1000',
+    ]);
+
+    DB::transaction(function () use ($lamaran, $request) {
+        $lamaran->update([
+            'status' => 'cancel_approval',
+            'cancel_reason' => $request->cancel_reason,
+        ]);
+    });
+
+    return redirect()->route('customer.lamaran.index')->with('success', 'Permintaan pembatalan telah dikirim dan menunggu persetujuan vendor.');
+}
 
 }

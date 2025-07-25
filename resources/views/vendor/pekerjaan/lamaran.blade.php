@@ -3,6 +3,19 @@
 @section('content')
     <h2>Lamaran untuk: {{ $pekerjaan->nama }}</h2>
 
+    @if(session('success'))
+        <div style="background: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div style="background: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px;">
+            {{ session('error') }}
+        </div>
+    @endif
+
+
     @if ($lamarans->isEmpty())
         <p>Belum ada pelamar untuk pekerjaan ini.</p>
     @else
@@ -58,18 +71,42 @@
 
                 <p>Status Saat Ini: <strong>{{ strtoupper($lamaran->status) }}</strong></p>
 
-                <form action="{{ route('vendor.lamaran.updateStatus', $lamaran->id) }}" method="POST">
-                    @csrf
-                    @method('PATCH')
+                @if (in_array($lamaran->status, ['pending', 'on_review']))
+                    <form action="{{ route('vendor.lamaran.updateStatus', $lamaran->id) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
 
-                    @if ($lamaran->status === 'pending')
-                        <button type="submit">Review</button>
-                    @elseif ($lamaran->status === 'on_review')
-                        <button type="submit">Accept</button>
-                    @elseif ($lamaran->status === 'accepted')
-                        <button disabled>Chat</button> <!-- tombol nonaktif (nanti fitur chat menyusul) -->
-                    @endif
-                </form>
+                        @if ($lamaran->status === 'pending')
+                            <button type="submit">Review</button>
+                        @elseif ($lamaran->status === 'on_review')
+                            <button type="submit">Accept</button>
+                        @endif
+                    </form>
+                @elseif ($lamaran->status === 'accepted')
+                    @php
+                        $chat = \App\Models\Chat::getOrCreate($lamaran->customer_id, $pekerjaan->vendor_id);
+                    @endphp
+                    <form action="{{ route('chat.redirect') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <input type="hidden" name="chat_id" value="{{ $chat->id }}">
+                        <input type="hidden" name="pekerjaan_nama" value="{{ $lamaran->pekerjaan->nama }}">
+                        <input type="hidden" name="gaji" value="{{ $lamaran->pekerjaan->range_harga }}">
+                        <input type="hidden" name="thumbnail" value="{{ $lamaran->pekerjaan->thumbnail }}">
+                        <button type="submit">Chat</button>
+                    </form>
+                @endif
+
+                @if ($lamaran->status === 'cancel_approval')
+                    <div style="background: #fff3cd; padding: 10px; border: 1px solid #ffeeba; margin-top: 10px;">
+                        <p><strong>Alasan Pembatalan dari Pelamar:</strong></p>
+                        <p>{{ $lamaran->cancel_reason }}</p>
+
+                        <form action="{{ route('vendor.lamaran.approveCancel', $lamaran->id) }}" method="POST" style="margin-top: 10px;">
+                            @csrf
+                            <button type="submit" style="background: #dc3545; color: white; padding: 8px 16px;">Setujui Pembatalan</button>
+                        </form>
+                    </div>
+                @endif
             </div>
         @endforeach
     @endif

@@ -32,20 +32,47 @@ class CustomerController extends Controller
     {
         $userMessage = $request->input('message');
 
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
-        ])->post('https://api.openai.com/v1/chat/completions', [
-            'model' => 'gpt-3.5-turbo',
-            'messages' => [
-                ['role' => 'system', 'content' => 'Kamu adalah asisten budaya Indonesia. Bantu customer memahami pekerjaan seperti lokasi, harga, deskripsi.'],
-                ['role' => 'user', 'content' => $userMessage],
-            ],
-        ]);
+        // 1. Coba cari apakah pesan mengandung kata kunci lokasi
+        preg_match('/di (\w+)/i', $userMessage, $matches);
+
+        // Default response
+        $responseText = 'Maaf, saya tidak menemukan pekerjaan yang cocok.';
+
+        if ($matches && isset($matches[1])) {
+            $lokasi = $matches[1];
+
+            // 2. Query data pekerjaan yang cocok
+            $pekerjaans = Pekerjaan::where('lokasi', 'LIKE', '%' . $lokasi . '%')->get();
+
+            if ($pekerjaans->count()) {
+                $resultText = "Berikut pekerjaan yang tersedia di " . ucfirst($lokasi) . ":\n";
+
+                foreach ($pekerjaans as $job) {
+                    $resultText .= "- {$job->nama}, Harga: {$job->range_harga}, Tanggal: {$job->mulai_kerja} s/d {$job->selesai_kerja}\nDeskripsi: {$job->deskripsi}\n\n";
+                }
+
+                $responseText = $resultText;
+            }
+        } else {
+            // Jika tidak ada keyword spesifik → kirim ke OpenAI biasa
+            $ai = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
+            ])->post('https://api.openai.com/v1/chat/completions', [
+                'model' => 'gpt-3.5-turbo',
+                'messages' => [
+                    ['role' => 'system', 'content' => 'Kamu adalah asisten budaya Indonesia. Jawablah dengan sopan.'],
+                    ['role' => 'user', 'content' => $userMessage],
+                ],
+            ]);
+
+            $responseText = $ai['choices'][0]['message']['content'] ?? 'Maaf, terjadi kesalahan.';
+        }
 
         return response()->json([
-            'reply' => $response['choices'][0]['message']['content'] ?? 'Maaf, terjadi kesalahan.'
+            'reply' => $responseText
         ]);
     }
+
 
     public function listLamaranSaya()
     {

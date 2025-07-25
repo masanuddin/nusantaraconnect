@@ -124,4 +124,22 @@ class VendorPekerjaanController extends Controller
 
         return back()->with('success', 'Status lamaran berhasil diperbarui.');
     }
+
+    public function approveCancel(Request $request, Lamaran $lamaran)
+    {
+        // Pastikan hanya vendor pemilik pekerjaan ini yang bisa menyetujui pembatalan
+        if ($lamaran->pekerjaan->vendor_id !== Auth::id()) {
+            abort(403, 'Tidak diizinkan.');
+        }
+
+        if ($lamaran->status !== 'cancel_approval') {
+            return back()->with('error', 'Status lamaran tidak valid untuk approval cancel.');
+        }
+
+        $lamaran->update([
+            'status' => 'cancelled',
+        ]);
+
+        return back()->with('success', 'Pembatalan lamaran telah disetujui.');
+    }
 }

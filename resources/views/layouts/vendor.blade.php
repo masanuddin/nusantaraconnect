@@ -50,6 +50,7 @@
         <ul>
             <li><a href="{{ route('vendor.dashboard') }}">Dashboard</a></li>
             <li><a href="{{ route('vendor.pekerjaan.index') }}">Kelola Pekerjaan</a></li>
+            <li><a href="{{ route('chat.index') }}">Chat</a></li>
         </ul>
 
         <form method="POST" action="{{ route('logout') }}" class="logout">

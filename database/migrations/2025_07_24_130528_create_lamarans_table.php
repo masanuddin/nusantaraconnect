@@ -23,7 +23,8 @@ return new class extends Migration {
             $table->string('pengalaman_kerja');
             $table->text('keterangan_tambahan')->nullable();
             $table->string('video')->nullable();
-            $table->enum('status', ['pending', 'on_review', 'accepted'])->default('pending');
+            $table->enum('status', ['pending', 'on_review', 'accepted', 'cancel_approval', 'cancelled'])->default('pending');
+            $table->text('cancel_reason')->nullable();
 
             $table->timestamps();
         });

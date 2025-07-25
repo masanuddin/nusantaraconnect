@@ -6,9 +6,17 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VendorController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatController;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{chat}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/{chat}/message', [ChatController::class, 'sendMessage'])->name('chat.message.send');
+    Route::post('/chat/redirect', [ChatController::class, 'redirectToChat'])->name('chat.redirect');
 });
 
 // Middleware untuk menangani redirect setelah login
@@ -42,7 +50,6 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::post('/customer/chatbot/ask', [CustomerController::class, 'askChatbot'])->name('customer.chatbot.ask');
     Route::get('/customer/lamaran', [CustomerController::class, 'listLamaranSaya'])->name('customer.lamaran.index');
     
-
     Route::get('/customer/lamaran/{pekerjaan}/step1', [\App\Http\Controllers\Customer\LamaranController::class, 'step1'])->name('customer.lamaran.step1');
     Route::post('/customer/lamaran/{pekerjaan}/step1', [\App\Http\Controllers\Customer\LamaranController::class, 'step1Post'])->name('customer.lamaran.step1.post');
     Route::get('/customer/lamaran/{pekerjaan}/step2', [\App\Http\Controllers\Customer\LamaranController::class, 'step2'])->name('customer.lamaran.step2');
@@ -51,6 +58,9 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::post('/customer/lamaran/{pekerjaan}/submit', [\App\Http\Controllers\Customer\LamaranController::class, 'submit'])->name('customer.lamaran.submit');
     Route::get('/customer/lamaran/selesai', [\App\Http\Controllers\Customer\LamaranController::class, 'selesai'])->name('customer.lamaran.selesai');
     Route::get('/customer/lamaran', [\App\Http\Controllers\Customer\LamaranController::class, 'index'])->name('customer.lamaran.index');
+    Route::post('/customer/lamaran/{lamaran}/cancel', [\App\Http\Controllers\Customer\LamaranController::class, 'cancel'])
+    ->name('customer.lamaran.cancel');
+
     
 });
 
@@ -62,6 +72,9 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
     Route::post('/vendor/lamaran/{lamaran}/status', [\App\Http\Controllers\Vendor\VendorPekerjaanController::class, 'updateStatus'])->name('vendor.lamaran.updateStatus');
     Route::patch('/vendor/lamaran/{lamaran}/status', [\App\Http\Controllers\Vendor\VendorPekerjaanController::class, 'updateStatus'])
     ->name('vendor.lamaran.updateStatus');
+    Route::post('/vendor/lamaran/{lamaran}/approve-cancel', [\App\Http\Controllers\Vendor\VendorPekerjaanController::class, 'approveCancel'])
+    ->name('vendor.lamaran.approveCancel');
+
 });
 
 // Dashboard umum
