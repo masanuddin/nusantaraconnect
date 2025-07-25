@@ -70,13 +70,13 @@
             <h4 class="fw-bold text-dark mb-4">🎯 Kesempatan Budaya Terkini</h4>
 
             @if ($pekerjaan->isEmpty())
-                <div class="alert alert-warning text-center rounded-3">Belum ada pekerjaan tersedia saat ini.</div>
+                <div class="alert alert-warning text-center rounded-3 py-2" style="font-size: 13.5px;">Belum ada pekerjaan tersedia saat ini.</div>
             @else
-                <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="row row-cols-1 row-cols-md-3 g-3">
                     @foreach ($pekerjaan as $item)
                         <div class="col">
-                            <div class="card border-0 rounded-3 pekerjaan-item p-0"
-                                style="cursor: pointer;"
+                            <div class="card border-0 pekerjaan-item rounded-3 shadow-sm p-0"
+                                style="cursor: pointer; font-size: 13.5px;"
                                 data-id="{{ $item->id }}"
                                 data-nama="{{ $item->nama }}"
                                 data-perusahaan="{{ $item->perusahaan ?? 'CV TALENTAMUDA' }}"
@@ -88,19 +88,24 @@
                                 data-link="{{ route('customer.lamaran.step1', $item->id) }}">
 
                                 @if ($item->thumbnail)
-                                    <img src="{{ asset('storage/' . $item->thumbnail) }}" class="card-img-top rounded-top-4" style="height: 180px; object-fit: cover;" alt="Thumbnail">
+                                    <img src="{{ asset('storage/' . $item->thumbnail) }}" 
+                                        class="card-img-top rounded-top-3" 
+                                        style="height: 120px; object-fit: cover;" 
+                                        alt="Thumbnail">
                                 @endif
-                                <div class="card-body">
-                                    <h6 class="fw-bold text-dark mb-1">{{ $item->nama }}</h6>
-                                    <div class="text-muted small">{{ $item->perusahaan ?? 'CV TALENTAMUDA' }}</div>
-                                    <div class="text-secondary small">{{ $item->lokasi }}</div>
-                                    <div class="text-secondary small">{{ $item->range_harga ?? 'Tarian (Performance)' }}</div>
+
+                                <div class="card-body px-3 py-2">
+                                    <h6 class="fw-semibold text-dark mb-1" style="font-size: 14px;">{{ $item->nama }}</h6>
+                                    <div class="text-muted">{{ $item->perusahaan ?? 'CV TALENTAMUDA' }}</div>
+                                    <div class="text-secondary">{{ $item->lokasi }}</div>
+                                    <div class="text-secondary">{{ $item->range_harga ?? 'Tarian (Performance)' }}</div>
                                 </div>
                             </div>
                         </div>
                     @endforeach
                 </div>
             @endif
+
             <div class="mt-5">
                 <div class="bg-white p-4 rounded-3" id="detail-container" style="min-height: 300px;">
                     <p class="text-muted">Klik salah satu pekerjaan di atas untuk melihat detailnya di sini.</p>

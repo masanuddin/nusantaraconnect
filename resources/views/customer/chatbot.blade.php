@@ -3,12 +3,12 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div style="width: 100%; max-width: 1200px;">
-        <div class="card shadow-sm p-4" style="background-color: #f8f9fa;">
+        <div class="bg-white rounded-4 p-4 mt-5">
             <div class="d-flex align-items-center border-bottom pb-3 mb-4">
                 <div class="rounded-circle bg-secondary me-3" style="width: 40px; height: 40px;"></div>
                 <div>
                     <h5 class="fw-bold mb-0" style="color: #7C4B28;">Muhammad Sirajudin</h5>
-                    <small class="text-muted">Talent Group Penari Tarian Kecak</small>
+                    <small class="text-muted">AI Kebudayaan</small>
                 </div>
             </div>
 
@@ -18,7 +18,7 @@
 
             <form id="chat-form" class="d-flex gap-2">
                 <input type="text" id="user-input" class="form-control" placeholder="Tanyakan tentang pekerjaan..." required>
-                <button type="submit" class="btn  text-dark border">Kirim</button>
+                <button type="submit" class="btn text-dark border">Kirim</button>
             </form>
         </div>
     </div>
@@ -41,9 +41,10 @@
     }
 
     .chat-right {
-        background-color: #e8cfc0;
+        background-color: #fff7f1;
         color: #5c3d25;
         align-self: flex-start;
+        border: 1px solid #e0e0e0;
     }
 
     #chat-box {
