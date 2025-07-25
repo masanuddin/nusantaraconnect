@@ -3,7 +3,7 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div style="width: 100%; max-width: 1200px;">
-        <div class="card shadow-sm p-4">
+        <div class="bg-white rounded-4 p-4 mt-5">
             <h4 class="fw-bold mb-4">Informasi Pribadi (PIC)</h4>
 
             <form method="POST" action="{{ route('customer.lamaran.step1.post', $pekerjaan->id) }}" enctype="multipart/form-data" id="lamaranForm">

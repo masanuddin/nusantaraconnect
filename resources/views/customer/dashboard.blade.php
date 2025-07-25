@@ -6,7 +6,7 @@
 
         {{-- Welcome Card --}}
         <div class="card border-0 rounded-3 p-4 mb-3">
-            <div class="row g-4 align-items-center">
+            <div style="height: 310px" class="row g-4 align-items-center">
                 <div class="col-md-8">
                     <h2 class="fw-bold mb-2" style="color: #5c3d25;">Halo, {{ Auth::user()->name }} 👋</h2>
                     <p class="text-muted mb-3" style="font-size: 1rem;">
@@ -18,7 +18,7 @@
                     </a>
                 </div>
                 <div class="col-md-4 text-center">
-                    <img src="{{ asset('images/illustration_budaya.png') }}" alt="Ilustrasi Budaya" class="img-fluid" style="max-height: 200px;">
+                    <img style="position: relative; top: -65px; width: 250px;" src="{{ asset('images/illustration_budaya.png') }}" alt="Ilustrasi Budaya" class="img-fluid">
                 </div>
             </div>
         </div>
@@ -39,17 +39,17 @@
             </div>
             <div class="col-md-4">
                 <div class="p-4 rounded-3 h-100 bg-white">
-                    <h5 class="fw-bold text-dark mb-2">📚 EduCulture Feed</h5>
-                    <p class="text-muted small">Konten singkat dan menarik seputar budaya lokal. Cocok untuk dibaca dan dibagikan!</p>
+                    <h5 class="fw-bold text-dark mb-2">📚 Facts about Tari Piring!</h5>
+                    <p class="text-muted small">Tari Piring adalah tarian khas Minangkabau yang dibawakan dengan gerakan cepat sambil membawa piring.</p>
                 </div>
             </div>
         </div>
 
         {{-- AI Chatbot Section --}}
-        <div class="card border-0 rounded-3 p-4 mb-5 bg-white">
+        <div style="height: 310px" class="card border-0 rounded-3 p-4 mb-5 bg-white">
             <div class="row align-items-center">
                 <div class="col-md-4 text-center">
-                    <img src="{{ asset('images/ai_chatbot_illustration.png') }}" alt="Asisten Budaya AI" class="img-fluid rounded-3" style="max-height: 200px;">
+                    <img style="position: relative; top: -90px; width: 250px;" src="{{ asset('images/ai_chatbot_illustration.png') }}" alt="Asisten Budaya AI" class="img-fluid rounded-3">
                 </div>
                 <div class="col-md-8">
                     <h5 class="fw-bold text-dark mb-2">🎙 Asisten Budaya (AI Chatbot)</h5>

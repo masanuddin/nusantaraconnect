@@ -1,61 +1,82 @@
 @extends('layouts.vendor')
 
 @section('content')
-    <h1>Edit Pekerjaan</h1>
+<div class="d-flex justify-content-center">
+    <div style="width: 100%; max-width: 1200px;">
+        <div class="bg-white rounded-4 p-4 mt-5">
+            <h4 class="fw-bold mb-4">Edit Pekerjaan</h4>
 
-    @if ($errors->any())
-        <div style="color: red;">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form method="POST" action="{{ route('vendor.pekerjaan.update', $pekerjaan->id) }}">
-        @csrf
-        @method('PUT')
-
-        <div style="margin-bottom: 10px;">
-            <label>Thumbnail:</label><br>
-            @if ($pekerjaan->thumbnail)
-                <img src="{{ asset('storage/' . $pekerjaan->thumbnail) }}" alt="Thumbnail" width="150"><br>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             @endif
-            <input type="file" name="thumbnail" accept="image/*">
-        </div>
 
-        <div style="margin-bottom: 10px;">
-            <label>Nama:</label><br>
-            <input type="text" name="nama" value="{{ old('nama', $pekerjaan->nama) }}" required>
-        </div>
+            <form method="POST" action="{{ route('vendor.pekerjaan.update', $pekerjaan->id) }}" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
 
-        <div style="margin-bottom: 10px;">
-            <label>Lokasi:</label><br>
-            <input type="text" name="lokasi" value="{{ old('lokasi', $pekerjaan->lokasi) }}" required>
-        </div>
+                <div class="mb-3">
+                    <label class="form-label">Thumbnail</label>
+                    @if ($pekerjaan->thumbnail)
+                        <div class="mb-2">
+                            <img src="{{ asset('storage/' . $pekerjaan->thumbnail) }}" alt="Thumbnail" width="150" class="rounded">
+                        </div>
+                    @endif
+                    <input type="file" name="thumbnail" class="form-control" accept="image/*">
+                </div>
 
-        <div style="margin-bottom: 10px;">
-            <label>Range Harga:</label><br>
-            <input type="text" name="range_harga" value="{{ old('range_harga', $pekerjaan->range_harga) }}" required>
-        </div>
+                <div class="mb-3">
+                    <label class="form-label">Nama Pekerjaan</label>
+                    <input type="text" name="nama" class="form-control" value="{{ old('nama', $pekerjaan->nama) }}" required>
+                </div>
 
-        <div style="margin-bottom: 10px;">
-            <label>Deskripsi:</label><br>
-            <textarea name="deskripsi" rows="4" required>{{ old('deskripsi', $pekerjaan->deskripsi) }}</textarea>
-        </div>
+                <div class="mb-3">
+                    <label class="form-label">Lokasi</label>
+                    <input type="text" name="lokasi" class="form-control" value="{{ old('lokasi', $pekerjaan->lokasi) }}" required>
+                </div>
 
-        <div style="margin-bottom: 10px;">
-            <label>Mulai Kerja:</label><br>
-            <input type="date" name="mulai_kerja" value="{{ old('mulai_kerja', $pekerjaan->mulai_kerja) }}" required>
-        </div>
+                <div class="mb-3">
+                    <label class="form-label">Range Harga</label>
+                    <input type="text" name="range_harga" class="form-control" value="{{ old('range_harga', $pekerjaan->range_harga) }}" required>
+                </div>
 
-        <div style="margin-bottom: 10px;">
-            <label>Selesai Kerja:</label><br>
-            <input type="date" name="selesai_kerja" value="{{ old('selesai_kerja', $pekerjaan->selesai_kerja) }}" required>
-        </div>
+                <div class="mb-3">
+                    <label class="form-label">Deskripsi</label>
+                    <textarea name="deskripsi" class="form-control" rows="4" required>{{ old('deskripsi', $pekerjaan->deskripsi) }}</textarea>
+                </div>
 
-        <button type="submit">Update</button>
-        <a href="{{ route('vendor.pekerjaan.index') }}">Batal</a>
-    </form>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Mulai Kerja</label>
+                        <input type="date" name="mulai_kerja" class="form-control" value="{{ old('mulai_kerja', $pekerjaan->mulai_kerja) }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Selesai Kerja</label>
+                        <input type="date" name="selesai_kerja" class="form-control" value="{{ old('selesai_kerja', $pekerjaan->selesai_kerja) }}" required>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-brown text-white px-4 me-2">Update</button>
+                    <a href="{{ route('vendor.pekerjaan.index') }}" class="btn btn-outline-secondary">Batal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-brown {
+        background-color: #7C4B28;
+    }
+
+    .btn-brown:hover {
+        background-color: #6f4224;
+    }
+</style>
 @endsection
