@@ -1,16 +1,24 @@
 @extends('layouts.vendor')
 
 @section('content')
-    <h1>Daftar Pekerjaan Anda</h1>
+    <h1 style="font-family: 'Montserrat', sans-serif; color: #8B4513; font-weight: 800;">
+    Lowongan Pekerjaan Anda
+</h1>
+
 
     @if (session('success'))
         <p style="color: green;">{{ session('success') }}</p>
     @endif
 
-    <a href="{{ route('vendor.pekerjaan.create') }}" style="display:inline-block; margin-bottom: 15px;">+ Tambah Pekerjaan Baru</a>
+    <a href="{{ route('vendor.pekerjaan.create') }}"
+   style="display:inline-block; margin-bottom: 15px; background-color: #8B4513; color: white; padding: 10px 15px; border-radius: 8px; text-decoration: none; font-family: 'Montserrat', sans-serif; font-weight: 800;">
+    Tambah Pekerjaan Baru +
+</a>
 
-    @if ($pekerjaan->isEmpty())
-        <p>Belum ada pekerjaan yang dibuat.</p>
+
+
+    <!-- @if ($pekerjaan->isEmpty())
+        <p>Belum ada pekerjaan yang dibuat.</p> -->
     @else
         <ul style="padding-left: 20px;">
             @foreach ($pekerjaan as $item)

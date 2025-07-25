@@ -1,7 +1,7 @@
 @extends('layouts.vendor')
 
 @section('content')
-    <h1>Selamat Datang di Dashboard Vendor</h1>
+    <h1>Lestarikanlah budaya Indonesia dengan membuat Event Budaya!</h1>
 
     <p>Halo, {{ Auth::user()->name }}! Ini adalah halaman utama Anda sebagai vendor.</p>
 
