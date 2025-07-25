@@ -1,19 +1,6 @@
-<!-- resources/views/vendor/dashboard.blade.php -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Customer Dashboard</title>
-</head>
-<body>
-    <h1>Welcome to Customer Dashboard</h1>
-        <form method="POST" action="{{ route('logout') }}">
-        @csrf
+@extends('layouts.customer')
 
-        <x-dropdown-link :href="route('logout')"
-                onclick="event.preventDefault();
-                            this.closest('form').submit();">
-            {{ __('Log Out') }}
-        </x-dropdown-link>
-    </form>
-</body>
-</html>
+@section('content')
+    <h1>Selamat Datang, {{ Auth::user()->name }}</h1>
+    <p>Ini adalah dashboard Anda sebagai customer.</p>
+@endsection

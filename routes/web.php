@@ -20,7 +20,7 @@ Route::get('/redirect', function () {
     $user = Auth::user();
     if ($user->role === 'admin') {
         return redirect()->route('admin.dashboard');
-    } elseif ($user->role === 'customer') {
+    } elseif ($user->role === 'customer') { 
         return redirect()->route('customer.dashboard');
     } elseif ($user->role === 'vendor') {
         return redirect()->route('vendor.dashboard');
@@ -37,11 +37,31 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // Halaman khusus customer
 Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::get('/customer/dashboard', [CustomerController::class, 'index'])->name('customer.dashboard');
+    Route::get('/customer/pekerjaan', [CustomerController::class, 'listPekerjaan'])->name('customer.pekerjaan');
+    Route::get('/customer/chatbot', [CustomerController::class, 'chatbot'])->name('customer.chatbot');
+    Route::post('/customer/chatbot/ask', [CustomerController::class, 'askChatbot'])->name('customer.chatbot.ask');
+    Route::get('/customer/lamaran', [CustomerController::class, 'listLamaranSaya'])->name('customer.lamaran.index');
+    
+
+    Route::get('/customer/lamaran/{pekerjaan}/step1', [\App\Http\Controllers\Customer\LamaranController::class, 'step1'])->name('customer.lamaran.step1');
+    Route::post('/customer/lamaran/{pekerjaan}/step1', [\App\Http\Controllers\Customer\LamaranController::class, 'step1Post'])->name('customer.lamaran.step1.post');
+    Route::get('/customer/lamaran/{pekerjaan}/step2', [\App\Http\Controllers\Customer\LamaranController::class, 'step2'])->name('customer.lamaran.step2');
+    Route::post('/customer/lamaran/{pekerjaan}/step2', [\App\Http\Controllers\Customer\LamaranController::class, 'step2Post'])->name('customer.lamaran.step2.post');
+    Route::get('/customer/lamaran/{pekerjaan}/konfirmasi', [\App\Http\Controllers\Customer\LamaranController::class, 'konfirmasi'])->name('customer.lamaran.konfirmasi');
+    Route::post('/customer/lamaran/{pekerjaan}/submit', [\App\Http\Controllers\Customer\LamaranController::class, 'submit'])->name('customer.lamaran.submit');
+    Route::get('/customer/lamaran/selesai', [\App\Http\Controllers\Customer\LamaranController::class, 'selesai'])->name('customer.lamaran.selesai');
+    Route::get('/customer/lamaran', [\App\Http\Controllers\Customer\LamaranController::class, 'index'])->name('customer.lamaran.index');
+    
 });
 
 // Halaman khusus customer
 Route::middleware(['auth', 'role:vendor'])->group(function () {
     Route::get('/vendor/dashboard', [VendorController::class, 'index'])->name('vendor.dashboard');
+    Route::resource('/vendor/pekerjaan', \App\Http\Controllers\Vendor\VendorPekerjaanController::class)->names('vendor.pekerjaan');
+    Route::get('/vendor/pekerjaan/{pekerjaan}/lamaran', [\App\Http\Controllers\Vendor\VendorPekerjaanController::class, 'lamaran'])->name('vendor.pekerjaan.lamaran');
+    Route::post('/vendor/lamaran/{lamaran}/status', [\App\Http\Controllers\Vendor\VendorPekerjaanController::class, 'updateStatus'])->name('vendor.lamaran.updateStatus');
+    Route::patch('/vendor/lamaran/{lamaran}/status', [\App\Http\Controllers\Vendor\VendorPekerjaanController::class, 'updateStatus'])
+    ->name('vendor.lamaran.updateStatus');
 });
 
 // Dashboard umum
