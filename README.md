@@ -1,5 +1,7 @@
 # NusantaraConnect — Cultural Talent Marketplace
 
+Perempatan Kemanggisan's official app product for GarudaHacks 6.0 in Universitas Multimedia Nusantara 🔥
+
 **NusantaraConnect** is a full-stack web platform that connects **Indonesian cultural performers** with **event organizers** through a centralized, digital booking system.  
 This project demonstrates real-world problem solving, scalable backend architecture, and practical AI integration.
 
