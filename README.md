@@ -7,6 +7,8 @@ This project demonstrates real-world problem solving, scalable backend architect
 
 > *A full-stack Laravel project integrating AI to support cultural digitalization in Indonesia.*
 
+Our Devpost Publication: https://devpost.com/software/nusantaraconnect
+
 ---
 
 ## Why This Project Matters
