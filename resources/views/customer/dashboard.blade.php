@@ -49,7 +49,7 @@
         <div style="height: 310px" class="card border-0 rounded-3 p-4 mb-5 bg-white">
             <div class="row align-items-center">
                 <div class="col-md-4 text-center">
-                    <img style="position: relative; top: -90px; width: 250px;" src="{{ asset('images/ai_chatbot_illustration.png') }}" alt="Asisten Budaya AI" class="img-fluid rounded-3">
+                    <img style="position: relative; top: -90px; width: 250px;" src="{{ asset('images/illustration_mascot.png') }}" alt="Asisten Budaya AI" class="img-fluid rounded-3">
                 </div>
                 <div class="col-md-8">
                     <h5 class="fw-bold text-dark mb-2">🎙 Asisten Budaya (AI Chatbot)</h5>
